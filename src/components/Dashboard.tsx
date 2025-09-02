@@ -44,11 +44,11 @@ export function Dashboard() {
       changeType: (data.netProfit || 0) >= 0 ? 'positive' as const : 'negative' as const,
     },
     {
-      title: 'Dépenses totales',
-      value: formatCFA((data.totalPurchaseCost || 0) + (data.totalExpenses || 0)),
+      title: 'Frais',
+      value: formatCFA(data.totalExpenses || 0),
       icon: ArrowDownRight,
       color: 'bg-red-500',
-      change: `Stock: ${formatCFA(data.totalPurchaseCost || 0)} + Frais: ${formatCFA(data.totalExpenses || 0)}`,
+      change: 'Total des dépenses opérationnelles',
       changeType: 'neutral' as const,
     },
     {
@@ -59,12 +59,20 @@ export function Dashboard() {
       change: 'Calculé automatiquement',
       changeType: 'neutral' as const,
     },
+    {
+      title: 'Dépenses totales investies',
+      value: formatCFA(data.totalInvestedCumulative || 0),
+      icon: Eye,
+      color: 'bg-blue-600',
+      change: 'Stock acheté (vendu + restant) + Frais',
+      changeType: 'neutral' as const,
+    },
     ...(isOwner ? [{
-      title: 'Total investi',
-      value: formatCFA(data.totalInvested || 0),
+      title: 'Investi (courant)',
+      value: formatCFA((data.totalPurchaseCost || 0) + (data.totalExpenses || 0)),
       icon: Eye,
       color: 'bg-blue-500',
-      change: `Stock: ${formatCFA(data.totalPurchaseCost || 0)} + Frais: ${formatCFA(data.totalExpenses || 0)}`,
+      change: `Stock restant: ${formatCFA(data.totalPurchaseCost || 0)} + Frais: ${formatCFA(data.totalExpenses || 0)}`,
       changeType: 'neutral' as const,
     }] : []),
   ];
@@ -159,17 +167,18 @@ export function Dashboard() {
               <span className="text-gray-600">Chiffre d'affaires</span>
               <span className="font-semibold text-green-600">+{formatCFA(data.totalRevenue || 0)}</span>
             </div>
-            {/* Dépenses totales visibles pour tous */}
             <div className="flex justify-between items-center py-2">
-              <span className="text-gray-600">Dépenses totales</span>
-              <span className="font-semibold text-red-600">-{formatCFA((data.totalPurchaseCost || 0) + (data.totalExpenses || 0))}</span>
+              <span className="text-gray-600">Frais</span>
+              <span className="font-semibold text-red-600">-{formatCFA(data.totalExpenses || 0)}</span>
             </div>
-            {/* Détail visible seulement pour les owners */}
-            {isOwner && (
-              <p className="text-xs text-gray-500 pl-1">
-                dont Stock: {formatCFA(data.totalPurchaseCost || 0)} et Frais: {formatCFA(data.totalExpenses || 0)}
-              </p>
-            )}
+            <div className="flex justify-between items-center py-2">
+              <span className="text-gray-600">Coût des stocks restants</span>
+              <span className="font-semibold text-gray-800">{formatCFA(data.totalPurchaseCost || 0)}</span>
+            </div>
+            <div className="flex justify-between items-center py-2">
+              <span className="text-gray-600">Dépenses totales investies</span>
+              <span className="font-semibold text-gray-900">{formatCFA(data.totalInvestedCumulative || 0)}</span>
+            </div>
             <div className="border-t border-gray-200 pt-2">
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-900 font-medium">Bénéfice net</span>

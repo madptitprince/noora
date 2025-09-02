@@ -4,13 +4,15 @@ import { startOfDay, startOfMonth } from 'date-fns';
 
 interface DashboardData {
   stockByCategory: Record<string, number>;
-  totalPurchaseCost: number;
-  totalExpenses: number;
-  totalInvested: number;
+  totalPurchaseCost: number; // coût du stock restant
+  totalExpenses: number; // frais opérationnels
+  totalInvested: number; // courant = stock restant + frais
+  totalInvestedCumulative: number; // cumulé = stock restant + stock vendu (COGS) + frais
+  costOfSoldStock: number; // COGS = coût d'achat des articles vendus
   dailyRevenue: number;
   monthlyRevenue: number;
   totalRevenue: number;
-  netProfit: number;
+  netProfit: number; // CA - COGS - Frais
   managerShare: number;
   // Prévisions
   potentialRevenueFromStock: number; // prix de vente du stock restant
@@ -23,6 +25,8 @@ export function useDashboard() {
     totalPurchaseCost: 0,
     totalExpenses: 0,
     totalInvested: 0,
+    totalInvestedCumulative: 0,
+    costOfSoldStock: 0,
     dailyRevenue: 0,
     monthlyRevenue: 0,
     totalRevenue: 0,
@@ -76,7 +80,6 @@ export function useDashboard() {
 
   const loadDashboardData = async () => {
     try {
-      console.log('🔄 Loading dashboard data...');
       setLoading(true);
       
       // Load products for stock analysis
@@ -89,7 +92,7 @@ export function useDashboard() {
         return;
       }
 
-      // Load sales data
+      // Load sales data (include product purchase price)
       const { data: sales, error: salesError } = await supabase
         .from('sales')
         .select('*, products(*)');
@@ -110,13 +113,11 @@ export function useDashboard() {
           console.warn('⚠️ Cannot load expenses:', expensesError.message);
         } else {
           safeExpenses = expenses || [];
-          console.log('✅ Dashboard loaded: Products:', products?.length || 0, '| Sales:', sales?.length || 0, '| Expenses:', safeExpenses.length);
         }
       } catch (expensesErr) {
         console.warn('❌ Expenses access blocked, using 0 for calculations');
       }
 
-      // Utiliser des tableaux vides si les données sont nulles
       const safeProducts = products || [];
       const safeSales = sales || [];
 
@@ -126,18 +127,15 @@ export function useDashboard() {
         return acc;
       }, {} as Record<string, number>);
 
-      // Calculate total purchase cost of current inventory
+      // Cost of remaining inventory (current stock)
       const totalPurchaseCost = safeProducts.reduce((sum, product) => 
         sum + (product.purchase_price * product.quantity), 0
       );
 
-      // Calculate total expenses
+      // Operating expenses (frais)
       const totalExpenses = safeExpenses.reduce((sum, expense) => sum + expense.amount, 0);
 
-      // Calculate total invested (purchase cost + expenses)
-      const totalInvested = totalPurchaseCost + totalExpenses;
-
-      // Calculate revenues
+      // Revenues
       const today = startOfDay(new Date());
       const thisMonth = startOfMonth(new Date());
 
@@ -153,25 +151,34 @@ export function useDashboard() {
         sum + (sale.sale_price * sale.quantity_sold), 0
       );
 
-      // Prévision: valeur potentielle du stock restant au prix de vente
+      // COGS: cost of goods sold based on product purchase price at time (approx using current value)
+      const costOfSoldStock = safeSales.reduce((sum, sale: any) => 
+        sum + ((sale.products?.purchase_price || 0) * sale.quantity_sold), 0
+      );
+
+      // Forecasts
       const potentialRevenueFromStock = safeProducts.reduce((sum, product) => 
         sum + (product.selling_price * product.quantity), 0
       );
       const forecastTotalRevenue = totalRevenue + potentialRevenueFromStock;
 
-      // Calculate net profit (total revenue - total invested)
-      const netProfit = totalRevenue - totalInvested;
+      // Invested metrics
+      const totalInvestedCurrent = totalPurchaseCost + totalExpenses; // remaining stock + expenses
+      const totalInvestedCumulative = totalPurchaseCost + costOfSoldStock + totalExpenses; // stable over time
 
-      // Calculate manager share (25% of net profit if positive)
+      // Profit: revenue - COGS - expenses
+      const netProfit = totalRevenue - costOfSoldStock - totalExpenses;
+
+      // Manager share (25% if profit positive)
       const managerShare = netProfit > 0 ? netProfit * 0.25 : 0;
-
-      console.log('💡 Forecast: vendu =', totalRevenue, '| stock restant =', potentialRevenueFromStock, '| prévision =', forecastTotalRevenue);
 
       setData({
         stockByCategory,
         totalPurchaseCost,
         totalExpenses,
-        totalInvested,
+        totalInvested: totalInvestedCurrent,
+        totalInvestedCumulative,
+        costOfSoldStock,
         dailyRevenue,
         monthlyRevenue,
         totalRevenue,
