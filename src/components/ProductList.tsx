@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Edit, Trash2, ShoppingCart, Plus, Search, Package } from 'lucide-react';
 import { useProducts } from '../hooks/useProducts';
 import { useAuth } from '../hooks/useAuth';
 import { Product } from '../lib/database.types';
 import { ProductForm } from './ProductForm';
 import { ProductImage } from './ProductImage';
+import { formatCFA } from '../lib/currency';
 
 export function ProductList() {
   const { products, loading, deleteProduct, sellProduct } = useProducts();
@@ -35,7 +36,7 @@ export function ProductList() {
   const handleSell = async (product: Product) => {
     if (!user || product.quantity <= 0) return;
     
-    const confirmed = window.confirm(`Confirmer la vente de "${product.name}" pour ${product.selling_price} € ?`);
+    const confirmed = window.confirm(`Confirmer la vente de "${product.name}" pour ${formatCFA(product.selling_price)} ?`);
     if (confirmed) {
       await sellProduct(product.id, product.selling_price, user.id);
     }
@@ -168,7 +169,7 @@ export function ProductList() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Prix de vente:</span>
-                  <span className="font-semibold text-green-600">{product.selling_price.toFixed(2)} €</span>
+                  <span className="font-semibold text-green-600">{formatCFA(product.selling_price)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Stock:</span>

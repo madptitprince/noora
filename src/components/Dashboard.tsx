@@ -12,6 +12,7 @@ import { useDashboard } from '../hooks/useDashboard';
 import { useAuth } from '../hooks/useAuth';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { formatCFA } from '../lib/currency';
 
 export function Dashboard() {
   const { data, loading } = useDashboard();
@@ -28,31 +29,31 @@ export function Dashboard() {
   const stats = [
     {
       title: 'Chiffre d\'affaires total',
-      value: `${(data.totalRevenue || 0).toFixed(2)} €`,
+      value: formatCFA(data.totalRevenue || 0),
       icon: TrendingUp,
       color: 'bg-green-500',
-      change: `+${(data.monthlyRevenue || 0).toFixed(2)} € ce mois`,
+      change: `+${formatCFA(data.monthlyRevenue || 0)} ce mois`,
       changeType: 'positive' as const,
     },
     {
       title: 'Bénéfice net',
-      value: `${(data.netProfit || 0).toFixed(2)} €`,
+      value: formatCFA(data.netProfit || 0),
       icon: DollarSign,
       color: (data.netProfit || 0) >= 0 ? 'bg-emerald-500' : 'bg-red-500',
-      change: `${(data.dailyRevenue || 0).toFixed(2)} € aujourd'hui`,
+      change: `${formatCFA(data.dailyRevenue || 0)} aujourd'hui`,
       changeType: (data.netProfit || 0) >= 0 ? 'positive' as const : 'negative' as const,
     },
     {
       title: 'Dépenses totales',
-      value: `${((data.totalPurchaseCost || 0) + (data.totalExpenses || 0)).toFixed(2)} €`,
+      value: formatCFA((data.totalPurchaseCost || 0) + (data.totalExpenses || 0)),
       icon: ArrowDownRight,
       color: 'bg-red-500',
-      change: `Stock: ${(data.totalPurchaseCost || 0).toFixed(2)} € + Frais: ${(data.totalExpenses || 0).toFixed(2)} €`,
+      change: `Stock: ${formatCFA(data.totalPurchaseCost || 0)} + Frais: ${formatCFA(data.totalExpenses || 0)}`,
       changeType: 'neutral' as const,
     },
     {
       title: 'Part gérante (25%)',
-      value: `${(data.managerShare || 0).toFixed(2)} €`,
+      value: formatCFA(data.managerShare || 0),
       icon: Wallet,
       color: 'bg-purple-500',
       change: 'Calculé automatiquement',
@@ -60,10 +61,10 @@ export function Dashboard() {
     },
     ...(isOwner ? [{
       title: 'Total investi',
-      value: `${(data.totalInvested || 0).toFixed(2)} €`,
+      value: formatCFA(data.totalInvested || 0),
       icon: Eye,
       color: 'bg-blue-500',
-      change: `Stock: ${(data.totalPurchaseCost || 0).toFixed(2)} € + Frais: ${(data.totalExpenses || 0).toFixed(2)} €`,
+      change: `Stock: ${formatCFA(data.totalPurchaseCost || 0)} + Frais: ${formatCFA(data.totalExpenses || 0)}`,
       changeType: 'neutral' as const,
     }] : []),
   ];
@@ -156,39 +157,39 @@ export function Dashboard() {
           <div className="space-y-3">
             <div className="flex justify-between items-center py-2">
               <span className="text-gray-600">Chiffre d'affaires</span>
-              <span className="font-semibold text-green-600">+{(data.totalRevenue || 0).toFixed(2)} €</span>
+              <span className="font-semibold text-green-600">+{formatCFA(data.totalRevenue || 0)}</span>
             </div>
             {/* Dépenses totales visibles pour tous */}
             <div className="flex justify-between items-center py-2">
               <span className="text-gray-600">Dépenses totales</span>
-              <span className="font-semibold text-red-600">-{((data.totalPurchaseCost || 0) + (data.totalExpenses || 0)).toFixed(2)} €</span>
+              <span className="font-semibold text-red-600">-{formatCFA((data.totalPurchaseCost || 0) + (data.totalExpenses || 0))}</span>
             </div>
             {/* Détail visible seulement pour les owners */}
             {isOwner && (
               <p className="text-xs text-gray-500 pl-1">
-                dont Stock: {(data.totalPurchaseCost || 0).toFixed(2)} € et Frais: {(data.totalExpenses || 0).toFixed(2)} €
+                dont Stock: {formatCFA(data.totalPurchaseCost || 0)} et Frais: {formatCFA(data.totalExpenses || 0)}
               </p>
             )}
             <div className="border-t border-gray-200 pt-2">
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-900 font-medium">Bénéfice net</span>
                 <span className={`font-bold text-lg ${(data.netProfit || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {(data.netProfit || 0) >= 0 ? '+' : ''}{(data.netProfit || 0).toFixed(2)} €
+                  {(data.netProfit || 0) >= 0 ? '+' : ''}{formatCFA(data.netProfit || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-purple-600 font-medium">Part gérante</span>
                 <span className="font-bold text-purple-600">
-                  {(data.managerShare || 0).toFixed(2)} €
+                  {formatCFA(data.managerShare || 0)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-2">
                 <span className="text-gray-600">Prévision (CA déjà vendu + potentiel stock)</span>
-                <span className="font-semibold text-gray-900">{(data.forecastTotalRevenue || 0).toFixed(2)} €</span>
+                <span className="font-semibold text-gray-900">{formatCFA(data.forecastTotalRevenue || 0)}</span>
               </div>
               {isOwner && (
                 <div className="text-xs text-gray-500">
-                  <span>dont Potentiel stock: {(data.potentialRevenueFromStock || 0).toFixed(2)} €</span>
+                  <span>dont Potentiel stock: {formatCFA(data.potentialRevenueFromStock || 0)}</span>
                 </div>
               )}
             </div>
@@ -202,7 +203,7 @@ export function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-green-600 font-medium">Aujourd'hui</p>
-                  <p className="text-lg font-bold text-green-700">{(data.dailyRevenue || 0).toFixed(2)} €</p>
+                  <p className="text-lg font-bold text-green-700">{formatCFA(data.dailyRevenue || 0)}</p>
                 </div>
                 <TrendingUp className="w-8 h-8 text-green-500" />
               </div>
@@ -211,7 +212,7 @@ export function Dashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-blue-600 font-medium">Ce mois</p>
-                  <p className="text-lg font-bold text-blue-700">{(data.monthlyRevenue || 0).toFixed(2)} €</p>
+                  <p className="text-lg font-bold text-blue-700">{formatCFA(data.monthlyRevenue || 0)}</p>
                 </div>
                 <Calendar className="w-8 h-8 text-blue-500" />
               </div>

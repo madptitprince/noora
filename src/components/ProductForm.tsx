@@ -205,7 +205,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
               {/* Purchase Price */}
               <div>
                 <label htmlFor="purchase_price" className="block text-sm font-medium text-gray-700 mb-2">
-                  Prix d'achat (€)
+                  Prix d'achat (F CFA)
                 </label>
                 <input
                   id="purchase_price"
@@ -222,7 +222,7 @@ export function ProductForm({ product, onClose }: ProductFormProps) {
               {/* Selling Price */}
               <div>
                 <label htmlFor="selling_price" className="block text-sm font-medium text-gray-700 mb-2">
-                  Prix de vente (€)
+                  Prix de vente (F CFA)
                 </label>
                 <input
                   id="selling_price"

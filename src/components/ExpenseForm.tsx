@@ -98,7 +98,7 @@ export function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
             {/* Amount */}
             <div>
               <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-                Montant (€)
+                Montant (F CFA)
               </label>
               <input
                 id="amount"

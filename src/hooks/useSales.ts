@@ -31,7 +31,8 @@ export function useSales() {
           products (
             name,
             category,
-            reference
+            reference,
+            image_url
           )
         `)
         .order('sale_date', { ascending: false });

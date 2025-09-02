@@ -6,6 +6,7 @@ import { Expense } from '../lib/database.types';
 import { format, startOfMonth, startOfWeek } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { ExpenseForm } from './ExpenseForm';
+import { formatCFA } from '../lib/currency';
 
 export function ExpensesList() {
   const { expenses, loading, deleteExpense } = useExpenses();
@@ -80,7 +81,7 @@ export function ExpensesList() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Gestion des Frais</h1>
           <p className="text-gray-600 mt-1">
-            {filteredExpenses.length} frais • Total: <span className="font-semibold text-red-600">{totalExpenses.toFixed(2)} €</span>
+            {filteredExpenses.length} frais • Total: <span className="font-semibold text-red-600">{formatCFA(totalExpenses)}</span>
           </p>
         </div>
         {canAddExpenses && (
@@ -103,7 +104,7 @@ export function ExpensesList() {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-red-600">Total des frais</p>
-              <p className="text-2xl font-bold text-red-700">{totalExpenses.toFixed(2)} €</p>
+              <p className="text-2xl font-bold text-red-700">{formatCFA(totalExpenses)}</p>
             </div>
           </div>
         </div>
@@ -115,7 +116,7 @@ export function ExpensesList() {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-orange-600">Ce mois</p>
-              <p className="text-2xl font-bold text-orange-700">{monthlyExpenses.toFixed(2)} €</p>
+              <p className="text-2xl font-bold text-orange-700">{formatCFA(monthlyExpenses)}</p>
             </div>
           </div>
         </div>
@@ -198,7 +199,7 @@ export function ExpensesList() {
                   <div className="flex items-center space-x-3">
                     <div className="text-right">
                       <p className="font-bold text-red-600 text-lg">
-                        -{expense.amount.toFixed(2)} €
+                        -{formatCFA(expense.amount)}
                       </p>
                     </div>
                     {canEditExpenses && (

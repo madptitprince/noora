@@ -47,15 +47,15 @@ export function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-pink-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-gray-50 to-white flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-pink-100">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 border border-gray-200">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full mb-4">
-              <Crown className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-black border-2 border-brand-gold rounded-full mb-4">
+              <Crown className="w-8 h-8 text-brand-gold" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-brand-gold">
               Noora
             </h1>
             <p className="text-gray-600 mt-2">
@@ -75,7 +75,7 @@ export function Auth() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-gold focus:border-transparent transition-all duration-200"
                 placeholder="votre@email.com"
               />
             </div>
@@ -91,7 +91,7 @@ export function Auth() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200 pr-12"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-gold focus:border-transparent transition-all duration-200 pr-12"
                   placeholder="••••••••"
                 />
                 <button
@@ -115,8 +115,8 @@ export function Auth() {
                     onClick={() => setRole('manager')}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${
                       role === 'manager'
-                        ? 'border-pink-500 bg-pink-50 text-pink-700'
-                        : 'border-gray-200 hover:border-pink-300'
+                        ? 'border-brand-gold bg-brand-gray-100 text-brand-black'
+                        : 'border-gray-200 hover:border-brand-gold'
                     }`}
                   >
                     <User className="w-5 h-5 mx-auto mb-1" />
@@ -127,11 +127,11 @@ export function Auth() {
                     onClick={() => setRole('owner')}
                     className={`p-3 rounded-lg border-2 transition-all duration-200 ${
                       role === 'owner'
-                        ? 'border-yellow-500 bg-yellow-50 text-yellow-700'
-                        : 'border-gray-200 hover:border-yellow-300'
+                        ? 'border-brand-gold bg-brand-gray-100 text-brand-black'
+                        : 'border-gray-200 hover:border-brand-gold'
                     }`}
                   >
-                    <Crown className="w-5 h-5 mx-auto mb-1" />
+                    <Crown className="w-5 h-5 mx-auto mb-1 text-brand-gold" />
                     <span className="text-sm font-medium">Propriétaire</span>
                   </button>
                 </div>
@@ -141,7 +141,7 @@ export function Auth() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-brand-gold text-brand-black py-3 px-4 rounded-lg font-medium hover:bg-brand-gold-dark focus:outline-none focus:ring-2 focus:ring-brand-gold focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : 'Créer un compte')}
             </button>
@@ -151,7 +151,7 @@ export function Auth() {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-gray-600 hover:text-pink-600 transition-colors duration-200"
+              className="text-sm text-gray-600 hover:text-brand-gold transition-colors duration-200"
             >
               {isLogin ? (
                 <>Pas de compte ? <span className="font-medium">Créer un compte</span></>
